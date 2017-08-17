@@ -1,5 +1,4 @@
 <?php
-
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,8 +9,6 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
 Route::group(['middleware' => ['web']], function () {
 	
 	Route::get('/', function () {
@@ -22,60 +19,48 @@ Route::group(['middleware' => ['web']], function () {
 	    return view('authenticatePage');
 	})->name('authenticatePage');
 
-
 	Route::post('/signup', 
 		[
 			'uses' =>'UserController@postSignUp',
 			'as' =>'signup'
 		]);	
-
-
 	Route::post('/signin', 
 		[
 			'uses' =>'UserController@postSignIn',
 			'as' =>'signin'
 		]);	
-
-
 	Route::get('/homepage', 
 		[
 		'uses' => 'PostController@getHomepage',
 		'as' => 'homepage',
 		'middleware' => 'auth'
 		]);
-
 	Route::get('/logout', 
 		[
 		'uses' => 'UserController@getLogout',
 		'as' => 'logout',
 		]); 
-
 	Route::get('/account', 
 		[
 		'uses' => 'UserController@getAccount',
 		'as' => 'account',
 		]); 
-
 	Route::post('/updateaccount', 
 		[
 		'uses' => 'UserController@postUpdateAccount',
 		'as' => 'account.save',
 		]); 
-
 	Route::get('/{filname}', 
 		[
 		'uses' => 'UserController@getUserImage',
 		'as' => 'account.image',
 		]); 
-
-
 	Route::post('/createpost', 
 		[
 			'uses' =>'PostController@postCreatePost',
 			'as' =>'post.create',
 			'middleware' => 'auth'
 		]);	
-
 	Route::get('/delete-post/{post_id}', 
 		[
 		'uses' => 'PostController@getDeletePost',
@@ -87,14 +72,9 @@ Route::group(['middleware' => ['web']], function () {
 		'uses' => 'PostController@postEditPost',
 		'as'=> 'edit'
 		]);
-
-
 	Route::post('/upvote', [
 		'uses' => 'PostController@postUpVotePost',
 		'as'=> 'upvote'
 		]);
-
 	
-
 });
-

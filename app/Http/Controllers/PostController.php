@@ -14,7 +14,8 @@ class PostController extends Controller
 {
 	public function getHomepage(){
 
-		$posts = Post::orderBy('created_at', 'desc')->get();
+		$posts = Post::orderBy('updated_at', 'desc')->get();
+		//return response()->json($posts, 200);
 		return view('homepage', ['posts' => $posts]);
 	}
 
@@ -30,11 +31,13 @@ class PostController extends Controller
 		$post->post_body = $request['post_body'];
 		$post->thread_id= 0; //to be added
 		$post->status= 0; //to be added
+		$post->url= 0;
 		$message  = 'there is an error';
 		if($request->user()->posts()->save($post)){
 			$message = "Post was created";
 		}
-			return redirect()->route('homepage')->with(['message' => $message]);
+			return response()->json($message, 200);
+			//return redirect()->route('homepage')->with(['message' => $message]);
 	}
 
 	public function getDeletePost($post_id){
@@ -43,7 +46,8 @@ class PostController extends Controller
 			return redirect()->back();
 		}
 		$post->delete();
-		return redirect()->route('homepage')->with(['message' => 'Succesful deleted']);
+		//return redirect()->route('homepage')->with(['message' => 'Succesful deleted']);
+		return response()->json();
 	}
 
 	public function postEditPost(Request $request){

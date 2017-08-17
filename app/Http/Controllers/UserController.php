@@ -6,9 +6,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use App\User;
+use App\Posts;
 use Validator;
 use Illuminate;
 
@@ -16,7 +18,7 @@ use Illuminate;
 * 
 */
 class UserController extends Controller
-{
+{	
 
 	public function postSignUp(Request $request){
 
@@ -37,15 +39,17 @@ class UserController extends Controller
 		if($password_check == $password){
 			$user = new User();
 			$user->email = $email;
-			$user->name =$name;
-			$user->surname=$surname;
+			$user->name = $name;
+			$user->surname = $surname;
 			$user->password = bcrypt($password);
 			$user->is_admin = false;
 			$user->status = 0;
 			$user->save();
 			Auth::login($user);
-			return redirect()->route('homepage');
+			return response()->json($user);
+			//return redirect()->route('homepage');
 		}
+		
 		return redirect()->route('home');
 	}
 
@@ -80,18 +84,26 @@ class UserController extends Controller
 
  		$user = Auth::user();
  		$user->name = $request['name'];
+ 		$user->surname = $request['surname'];
  		$user->update();
  		$file = $request->file('image');
  		$filename = $user->id .'.jpg';
  		if($file){
  			Storage::disk('local')->put($filename, File::get($file));
  		}
+
  		return redirect()->route('account');
  	}
 
  	public function getUserImage($filename){
  		$file = Storage::disk('local')->get($filename);
  		return new Response($file, 200);
+ 	}
+
+ 	public function deleteUser(Request $request){
+ 		$user = Auth::user();
+ 		$user->delete();
+ 		return redirect()->route('home');
  	}
 }
 
